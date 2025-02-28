@@ -12,11 +12,12 @@ double yaw;
 double ePrev = 0;
 double eIntegral = 0;
 
+
 void bnoCalibration(){
   sensors_event_t event;
   for (int i = 0; i <1000; i++){
     bno.getEvent(&event); 
-    yawError += event.orientation.x;
+    yawError += normalization(event.orientation.x);
     delay(3);
   }
   yawError = yawError/1000;
@@ -85,9 +86,9 @@ void goStraight(float targetDistance){
     }
 
     float errorAngle = normalization(yaw - targetAngle);
-    double kpAngle = 3.3;
-    double kiAngle = 0.0;
-    double kdAngle = 0.1;
+    double kpAngle = 3.4;
+    double kiAngle = 0.01;
+    double kdAngle = 0.12;
     double correctionAngle = pidController(errorAngle, kpAngle, kiAngle, kdAngle);  // Adjust angle correction
 
     int leftSpeed = constrain(speed - correctionAngle, MIN_SPEED, MAX_SPEED);
@@ -100,8 +101,8 @@ void goStraight(float targetDistance){
 
 void turnRight(double angleSet){
   encoderLeftCount = 0, encoderRightCount = 0;
-  double steps = angleSet * 1.2;
-  double speed = 140;
+  double steps = angleSet * 1.2 + 3;
+  double speed = 135;
   while (encoderLeftCount <= steps && speed > 10)
   {
       if (steps - encoderLeftCount < 35)
@@ -126,8 +127,8 @@ void turnRight(double angleSet){
 
 void turnLeft(double angleSet){
   encoderLeftCount = 0, encoderRightCount = 0;
-  double steps = angleSet * 1.2 + 20;
-  double speed = 140;
+  double steps = angleSet * 1.2 + 12;
+  double speed = 135;
   while (encoderRightCount<= steps && speed > 10)
   {
       if (steps - encoderRightCount < 50)
