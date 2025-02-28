@@ -9,7 +9,7 @@
 const int dx[] = {0, -1, 0, 1};
 const int dy[] = {1, 0, -1, 0};
 
-#define ONE_CELL 14.3
+#define ONE_CELL 14.2
 #define DIR_UP 0
 #define DIR_LEFT 1
 #define DIR_DOWN 2
@@ -24,11 +24,11 @@ const int dy[] = {1, 0, -1, 0};
 #define DEST_CENTER 0
 #define DEST_SOURCE 1
 
-#define MAZESIDE_SIZE 6
+#define MAZESIDE_SIZE 16
 
 #define START_DIR DIR_UP
-#define x_end 4
-#define y_end 4
+//#define x_end 4
+//#define y_end 4
 #define INF 99
 typedef unsigned char u8;
 typedef unsigned int u32;
@@ -73,7 +73,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(En_RIGHT_1), handleEncoderRight, RISING);  
   attachInterrupt(digitalPinToInterrupt(En_LEFT_1), handleEncoderLeft, RISING);
 
-  //bnoCalibration();
+  bnoCalibration();
 }
 
 u8 m_dir;
@@ -125,18 +125,18 @@ void floodfillToCenter()
             maze[i][j].distance_to_dest = INF;
         }
     }
-    // for (u8 i = MAZESIDE_SIZE / 2 - 1; i <= MAZESIDE_SIZE / 2; i++)
-    // {
-    //     for (u8 j = MAZESIDE_SIZE / 2 - 1; j <= MAZESIDE_SIZE / 2; j++)
-    //     {
-    //         maze[i][j].distance_to_dest = 0;
-    //         q.push(std::make_pair(i, j));
-    //     }
-    // }
+     for (u8 i = MAZESIDE_SIZE / 2 - 1; i <= MAZESIDE_SIZE / 2; i++)
+     {
+         for (u8 j = MAZESIDE_SIZE / 2 - 1; j <= MAZESIDE_SIZE / 2; j++)
+         {
+             maze[i][j].distance_to_dest = 0;
+             q.push(std::make_pair(i, j));
+         }
+     }
     
     // Đặt ô mục tiêu
-    q.push(std::make_pair(x_end, y_end));
-    maze[x_end][y_end].distance_to_dest = 0;
+    //q.push(std::make_pair(x_end, y_end));
+    //maze[x_end][y_end].distance_to_dest = 0;
     while (!q.empty())
     {
         auto u = q.front();
@@ -180,11 +180,11 @@ void floodfillToSource()
 
 bool checkFinish(u8 destination)
 {
-    // return (destination == DEST_CENTER 
-    // && MAZESIDE_SIZE / 2 - 1 <= m_x && m_x <= MAZESIDE_SIZE / 2 
-    // && MAZESIDE_SIZE / 2 - 1 <= m_y && m_y <= MAZESIDE_SIZE / 2) 
-    // || (destination == DEST_SOURCE && m_x == 0 && m_y == 0);
-    return (destination == DEST_CENTER && m_x == x_end && m_y == x_end);
+     return (destination == DEST_CENTER 
+     && MAZESIDE_SIZE / 2 - 1 <= m_x && m_x <= MAZESIDE_SIZE / 2 
+     && MAZESIDE_SIZE / 2 - 1 <= m_y && m_y <= MAZESIDE_SIZE / 2) 
+     || (destination == DEST_SOURCE && m_x == 0 && m_y == 0);
+    //return (destination == DEST_CENTER && m_x == x_end && m_y == x_end);
 }
 
 
@@ -216,7 +216,7 @@ u8 minDistanceNeighbort(u8 m_x, u8 m_y)
 u8 bestDir(u8 m_x, u8 m_y, u8 current_dist)
 {
     u8 best_dir = LOOK_FORWARD;
-    // ưu tiên đi thẳng nếu các ô cung quanh ô hiện tại có cùng giá trị
+
     for (int i = 3; i >= 0; i--)
     {
         u8 new_dir = dir_change(m_dir, i);
@@ -312,10 +312,147 @@ void control()
 }
 void loop()
 {
+  /*
     initFloodfill();
     floodfillToCenter();
     while (true)
     {
         control();
     }
+    */
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+
+  turnRight(90);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+
+  turnRight(90);
+  goStraight(ONE_CELL);
+
+  turnLeft(90);
+  goStraight(ONE_CELL);
+
+  turnRight(90);
+  goStraight(14.5);
+
+  turnLeft(90);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);  
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);  
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);  
+
+  turnLeft(90);
+  goStraight(ONE_CELL);
+
+  turnLeft(90);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);  
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);  
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+
+  turnRight(90);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);  
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);  
+
+  turnLeft(90);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+
+  turnRight(90);
+  goStraight(ONE_CELL);
+
+  turnRight(90);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+
+  turnRight(90);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+
+  turnLeft(90);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);  
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);  
+  goStraight(ONE_CELL);
+
+  turnLeft(90);
+  goStraight(ONE_CELL);
+
+  turnLeft(90);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);  
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL); 
+
+  turnRight(90);
+  goStraight(ONE_CELL);
+
+  turnRight(90);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);  
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL); 
+
+  turnLeft(90);
+  goStraight(ONE_CELL);
+
+  turnLeft(90);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+
+  turnRight(90);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+
+  turnLeft(90);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+
+  turnRight(90);
+  goStraight(ONE_CELL);
+  goStraight(ONE_CELL);
+
+  turnLeft(90);
+  goStraight(ONE_CELL);
+
+  turnLeft(90);
+  goStraight(ONE_CELL);
+
 }
