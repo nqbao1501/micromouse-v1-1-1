@@ -55,6 +55,7 @@ void motorStop(){
   ledcWrite(PWM_CHANNEL_B2, 0);
 }
 
+//Phương trinhg này là do BNO trả góc về từ 0 -> 360 độ. Chuyển về là -180->180 vì cần dùng trong PID đi thẳng
 double normalization(double x)
 {
     if (x > 180)
@@ -74,7 +75,7 @@ void goStraight(float targetDistance){
   encoderRightCount = 0;
   long totalDistance = 0;
   double speed = 150;
-  
+  //Phần này để điều khiển khoảng cách mà xe đi được
   while (totalDistance < targetDistance && speed > 10) {
     bno.getEvent(&event); 
     yaw = event.orientation.x - yawError;
@@ -85,6 +86,8 @@ void goStraight(float targetDistance){
       speed  = speed  - 1.3;
     }
 
+    
+  //Phần này để điều khiển riêng biệt tốc độ 2 bánh xe, sao cho đi thằng
     float errorAngle = normalization(yaw - targetAngle);
     double kpAngle = 3.4;
     double kiAngle = 0.01;
