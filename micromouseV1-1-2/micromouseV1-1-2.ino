@@ -9,7 +9,7 @@
 const int dx[] = {0, -1, 0, 1};
 const int dy[] = {1, 0, -1, 0};
 
-#define ONE_CELL 14.2
+#define ONE_CELL 12.7//15.5
 #define DIR_UP 0
 #define DIR_LEFT 1
 #define DIR_DOWN 2
@@ -33,6 +33,9 @@ const int dy[] = {1, 0, -1, 0};
 typedef unsigned char u8;
 typedef unsigned int u32;
 #define dir_change(x, y) (x + y) % 4
+
+
+
 
 
 
@@ -73,6 +76,9 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(En_RIGHT_1), handleEncoderRight, RISING);  
   attachInterrupt(digitalPinToInterrupt(En_LEFT_1), handleEncoderLeft, RISING);
 
+  initWiFi();
+  initESPNow();
+  registerPeer();
   bnoCalibration();
 }
 
@@ -300,7 +306,7 @@ void control()
     if (command == 3)
     {
         turnRight(90);
-        goStraight(ONE_CELL);
+        goStraight(ONE_CELL);        
     }
     if (command == 4)
     {
@@ -312,147 +318,10 @@ void control()
 }
 void loop()
 {
-  /*
     initFloodfill();
     floodfillToCenter();
     while (true)
     {
         control();
     }
-    */
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-
-  turnRight(90);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-
-  turnRight(90);
-  goStraight(ONE_CELL);
-
-  turnLeft(90);
-  goStraight(ONE_CELL);
-
-  turnRight(90);
-  goStraight(14.5);
-
-  turnLeft(90);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);  
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);  
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);  
-
-  turnLeft(90);
-  goStraight(ONE_CELL);
-
-  turnLeft(90);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);  
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);  
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-
-  turnRight(90);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);  
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);  
-
-  turnLeft(90);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-
-  turnRight(90);
-  goStraight(ONE_CELL);
-
-  turnRight(90);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-
-  turnRight(90);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-
-  turnLeft(90);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);  
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);  
-  goStraight(ONE_CELL);
-
-  turnLeft(90);
-  goStraight(ONE_CELL);
-
-  turnLeft(90);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);  
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL); 
-
-  turnRight(90);
-  goStraight(ONE_CELL);
-
-  turnRight(90);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);  
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL); 
-
-  turnLeft(90);
-  goStraight(ONE_CELL);
-
-  turnLeft(90);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-
-  turnRight(90);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-
-  turnLeft(90);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-
-  turnRight(90);
-  goStraight(ONE_CELL);
-  goStraight(ONE_CELL);
-
-  turnLeft(90);
-  goStraight(ONE_CELL);
-
-  turnLeft(90);
-  goStraight(ONE_CELL);
-
 }

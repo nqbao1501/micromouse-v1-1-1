@@ -1,5 +1,6 @@
 #include "motor.h"
 #include "encoder.h"
+#include "ir.h"
 
 
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x29, &Wire);
@@ -55,7 +56,6 @@ void motorStop(){
   ledcWrite(PWM_CHANNEL_B2, 0);
 }
 
-//Phương trinhg này là do BNO trả góc về từ 0 -> 360 độ. Chuyển về là -180->180 vì cần dùng trong PID đi thẳng
 double normalization(double x)
 {
     if (x > 180)
@@ -70,12 +70,12 @@ double normalization(double x)
 }
 
 void goStraight(float targetDistance){
-  targetDistance = (targetDistance / (3.8* M_PI)) * 205;  
+  targetDistance = (targetDistance / (3.8* M_PI)) * 210;  
   encoderLeftCount = 0; 
   encoderRightCount = 0;
   long totalDistance = 0;
   double speed = 150;
-  //Phần này để điều khiển khoảng cách mà xe đi được
+  
   while (totalDistance < targetDistance && speed > 10) {
     bno.getEvent(&event); 
     yaw = event.orientation.x - yawError;
@@ -86,26 +86,25 @@ void goStraight(float targetDistance){
       speed  = speed  - 1.3;
     }
 
-    
-  //Phần này để điều khiển riêng biệt tốc độ 2 bánh xe, sao cho đi thằng
     float errorAngle = normalization(yaw - targetAngle);
-    double kpAngle = 3.4;
+    double kpAngle = 3.45;
     double kiAngle = 0.01;
     double kdAngle = 0.12;
     double correctionAngle = pidController(errorAngle, kpAngle, kiAngle, kdAngle);  // Adjust angle correction
 
-    int leftSpeed = constrain(speed - correctionAngle, MIN_SPEED, MAX_SPEED);
-    int rightSpeed = constrain(speed + correctionAngle, MIN_SPEED, MAX_SPEED);
+
+    int leftSpeed = constrain(speed - correctionAngle - (getIR(ir_tx1, ir_rx1) - getIR(ir_tx3, ir_rx3))*0.0055, MIN_SPEED, MAX_SPEED);
+    int rightSpeed = constrain(speed + correctionAngle + (getIR(ir_tx1, ir_rx1) - getIR(ir_tx3, ir_rx3))*0.0055, MIN_SPEED, MAX_SPEED);
     motorForward(rightSpeed, leftSpeed);
   }
   motorStop();
-  delay(650);
+  delay(500);
 }
 
 void turnRight(double angleSet){
   encoderLeftCount = 0, encoderRightCount = 0;
-  double steps = angleSet * 1.2 + 3;
-  double speed = 135;
+  double steps = angleSet * 1.2+10;
+  double speed = 140;
   while (encoderLeftCount <= steps && speed > 10)
   {
       if (steps - encoderLeftCount < 35)
@@ -125,13 +124,13 @@ void turnRight(double angleSet){
   }
   motorStop();
   targetAngle = normalization(targetAngle + angleSet);
-  delay(650);
+  delay(500);
 }
 
 void turnLeft(double angleSet){
   encoderLeftCount = 0, encoderRightCount = 0;
-  double steps = angleSet * 1.2 + 12;
-  double speed = 135;
+  double steps = angleSet * 1.2 + 20;
+  double speed = 140;
   while (encoderRightCount<= steps && speed > 10)
   {
       if (steps - encoderRightCount < 50)
@@ -149,10 +148,11 @@ void turnLeft(double angleSet){
   }
   motorStop();
   targetAngle = normalization(targetAngle - angleSet);
-  delay(650);
+  delay(500);
 }
 
-double pidController(double error, double kp, double ki, double kd) { /
+double pidController(double error, double kp, double ki, double kd) { // Với mỗi loop PID, cần có một biến prevTime khác nhau. nếu dùng 1 biến prevTime là global thì prevTime của PID loop sau sẽ là currentTime của PID loop trước 
+  double currentTime = micros();
   double dT = ((double)(currentTime - prevTime)) / (1.0e6);  // Time difference in seconds
   prevTime = currentTime;
   eIntegral += error * dT;  // Integral term (accumulated error)
