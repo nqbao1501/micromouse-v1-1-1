@@ -151,7 +151,7 @@ void turnLeft(double angleSet){
   delay(500);
 }
 
-double pidController(double error, double kp, double ki, double kd) { // Với mỗi loop PID, cần có một biến prevTime khác nhau. nếu dùng 1 biến prevTime là global thì prevTime của PID loop sau sẽ là currentTime của PID loop trước 
+double pidController(double error, double kp, double ki, double kd) { 
   double currentTime = micros();
   double dT = ((double)(currentTime - prevTime)) / (1.0e6);  // Time difference in seconds
   prevTime = currentTime;
